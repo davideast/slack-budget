@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es5",
+        "noImplicitAny": false,
+        "sourceMap": false,
+        "typeRoots": [
+            "./node_modules/@types"
+        ],
+        "lib": [
+            "es2015"
+        ],
+        "outDir": "dist"
+    },
+    "files": [
+      "index.ts",
+      "./node_modules/@types/express-validator/index.d.ts"  
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}

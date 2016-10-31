@@ -1,0 +1,25 @@
+{
+  "name": "slack-budget",
+  "version": "0.0.1",
+  "description": "Managing a budget with Slack",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "David East",
+  "license": "MIT",
+  "dependencies": {
+    "@types/body-parser": "0.0.33",
+    "@types/express-validator": "^2.20.33",
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "express-validator": "^2.21.0",
+    "firebase": "^3.5.2",
+    "util": "^0.10.3"
+  },
+  "devDependencies": {
+    "@types/express": "^4.0.33",
+    "@types/jasmine": "^2.5.36",
+    "jasmine": "^2.5.2"
+  }
+}
