@@ -37,6 +37,5 @@ export function queue(req, res) {
   firebase.database().ref('users').child(slackPost.user_id).update({
     username: slackPost.user_name
   });
-
-
+  
 }

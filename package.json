@@ -6,7 +6,7 @@
   "scripts": {
     "test": "tsc && node dist/test/runner",
     "start": "tsc && ./run.sh",
-    "e2e": "tsc && node dist/test/e2e-runner"
+    "e2e": "tsc && ./e2e.sh"
   },
   "author": "David East",
   "license": "MIT",
