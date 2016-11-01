@@ -9,15 +9,17 @@ var firebase_app_1 = require('../../firebase-app');
 var command_matchers_1 = require('./command-matchers');
 var PurchaseRule = (function (_super) {
     __extends(PurchaseRule, _super);
-    function PurchaseRule() {
-        _super.apply(this, arguments);
+    function PurchaseRule(firebaseApp, matchers) {
+        _super.call(this, firebaseApp);
+        this.firebaseApp = firebaseApp;
+        this.matchers = matchers;
         this.matcher = '+';
     }
     PurchaseRule.create = function () {
-        return new PurchaseRule(firebase_app_1.firebaseApp);
+        return new PurchaseRule(firebase_app_1.firebaseApp, command_matchers_1.matchers);
     };
     PurchaseRule.prototype.parse = function (post) {
-        return parseSlackPostCommand(post);
+        return parseSlackPostCommand(post, this.matchers);
     };
     PurchaseRule.prototype.buildInstructions = function (post) {
         console.log(this.parse(post));
@@ -32,11 +34,10 @@ exports.PurchaseRule = PurchaseRule;
 /**
  * Extract values from a command
  * ex: +specialty $21.03 at Market Hall
- *  => { category: 'specialty , cost: 21.03, location: 'Market Hall', timestmap: now }
+ *  => { category: 'specialty , cost: 21.03, location: 'Market Hall', timestmap: 1478012296989 }
  */
-function parseSlackPostCommand(post) {
+function parseSlackPostCommand(post, matchers) {
     var commandText = post.text;
-    var matchers = [command_matchers_1.categoryMatcher, command_matchers_1.costMatcher, command_matchers_1.locationMatcher, command_matchers_1.dateMatcher];
     var parsedCommand = {};
     matchers.forEach(function (matcher) {
         parsedCommand[matcher.property] = matcher.parse(commandText);
