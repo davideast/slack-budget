@@ -1,8 +1,10 @@
+import { SlackPost } from '../../interfaces';
+
 export interface CommandRule {
    firebaseApp: firebase.app.App;
    matcher: string;
    match(text: string): boolean;
-   buildInstructions(): CommandInstruction;
+   buildInstructions(post: SlackPost): CommandInstruction;
 }
 
 export interface CommandInstruction {

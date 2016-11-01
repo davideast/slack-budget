@@ -4,7 +4,9 @@ require('jasmine');
 describe('commands', function () {
     describe('parseCommand', function () {
         it('should parse a command', function () {
-            var instructions = command_1.parseCommand('+specialty $21.03 at Market Hall', command_1.allRules);
+            var instructions = command_1.parseCommand({
+                text: '+specialty $21.03 at Market Hall'
+            }, command_1.allRules);
             console.log(instructions);
         });
     });

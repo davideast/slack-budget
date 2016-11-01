@@ -8,7 +8,9 @@ describe('commands', () => {
 
       it('should parse a command', () => {
 
-         const instructions = parseCommand('+specialty $21.03 at Market Hall', allRules);
+         const instructions = parseCommand({
+            text: '+specialty $21.03 at Market Hall'
+         } as SlackPost , allRules);
          console.log(instructions);
 
       });
