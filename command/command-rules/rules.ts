@@ -1,6 +1,6 @@
-import { PurchaseRule } from './'
+import { PurchaseRule, CommandRule } from './' 
 
-const allRules = [
+const allRules: CommandRule[] = [
    PurchaseRule.create()
 ];
 

@@ -25,7 +25,13 @@ function queue(req, res) {
         return;
     }
     // Write user entry
-    user_1.user(slackPost.user_id).update(slackPost);
+    user_1.user(slackPost.user_id).update(slackPost)
+        .then(function (_) {
+        // return command(slackPost).parse();
+    })
+        .then(function (instructions) {
+        instructions.map(function (instruction) { return instruction.execute(); });
+    });
     res.json(checkedResponse);
     return;
 }

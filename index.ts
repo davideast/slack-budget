@@ -32,11 +32,13 @@ export function queue(req, res) {
   }
 
   // Write user entry
-  user(slackPost.user_id).update(slackPost).then(_ => {
-    // return command(slackPost).parse();
-  });
-
-
+  user(slackPost.user_id).update(slackPost)
+    .then(_ => {
+      // return command(slackPost).parse();
+    })
+    .then(instructions => {
+      instructions.map(instruction => instruction.execute())
+    });
 
   res.json(checkedResponse);
   return;
