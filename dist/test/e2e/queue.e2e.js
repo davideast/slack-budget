@@ -17,6 +17,23 @@ describe('POST /queue', function () {
                 done();
             });
         });
+        it('should authenticate with a valid token and with a valid POST body', function (done) {
+            var goodPost = {
+                token: SLACK_TOKEN,
+                team_id: '1',
+                team_domain: 'domain',
+                user_name: 'alice',
+                user_id: '1',
+                channel_id: '2',
+                channel_name: 'a',
+                command: '/spent',
+                text: '/spent add *category'
+            };
+            makeQueueRequest(goodPost).then(function (res) {
+                expect(res.status).toEqual(200);
+                done();
+            });
+        });
     });
 });
 /**

@@ -8,7 +8,7 @@ var SERVICE_ACCOUNT_PATH = process.env.SERVICE_ACCOUNT_PATH;
 var PORT = process.env.PORT;
 var app = express();
 var firebaseApp = firebase.initializeApp({
-    serviceAccount: 'sa.json',
+    // serviceAccount: 'sa.json',
     databaseURL: 'https://slack-budget.firebaseio.com'
 });
 app.use(bodyParser.json());
@@ -18,19 +18,21 @@ app.use(bodyParser.json());
  */
 app.post('/queue', queue);
 app.listen(PORT, function () {
-    console.log('Example app listening on port 3000!');
+    console.log("Example app listening on port " + PORT + "!");
 });
 function queue(req, res) {
     var slackPost = req.body;
     var checkedResponse = helpers_1.checkPostParams(slackPost, SLACK_TOKEN);
     // If status returns 403, return error to user
-    if (checkedResponse) {
+    if (checkedResponse.status === 403) {
         res.json(checkedResponse);
         return;
     }
+    var userRef = firebaseApp.database().ref('users').child(slackPost.user_id);
     // Write user entry
-    firebase.database().ref('users').child(slackPost.user_id).update({
+    userRef.update({
         username: slackPost.user_name
-    }).catch(function (e) { return console.log(e); });
+    });
+    res.json(checkedResponse);
 }
 exports.queue = queue;
