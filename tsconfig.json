@@ -12,10 +12,6 @@
         ],
         "outDir": "dist"
     },
-    "files": [
-      "index.ts",
-      "./node_modules/@types/express-validator/index.d.ts"  
-    ],
     "exclude": [
         "node_modules"
     ]

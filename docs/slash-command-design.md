@@ -9,6 +9,8 @@
 6. Record place of purchase
 7. Modify FKs
 8. Set monthly budget
+9. Get current left on the month
+10. Get current spent in category
 
 ## Command API
 The name is `/spent`. Using a `+` will indicate a category. The `$` will indicate the cost. The `at` will indicate the place. The `on` will indicate the date and time. If there is no `on` then the current date and time is used. Set the current month's budget with a `*current`.
@@ -17,10 +19,12 @@ The name is `/spent`. Using a `+` will indicate a category. The `$` will indicat
 /spent +specialty $21.03 at Market Hall
 /spent +eatingout $34.16 at Long Bridge Pizza
 /spent +specialty $21.03 at Market Hall on 11/03 6:03pm
-/spent +skateboarding $25.00 at Shred quarters
+/spent +skateboarding $25.00 at Shredquarters
 /spent add +football 
 /spent +football $200 on NFL Sunday Ticket
 /spent *current 150.00 
+/spent How much?
+/spent How much +football?
 ```
 
 ### Data Structure
@@ -60,12 +64,14 @@ The primary shared key is the user's `uid`. Each month has a budget amount, ther
    "specifics": {
       "$uid": {
          "$categoryId": {
-            "$purchaseId": {
-               "amount": 21.03,
-               "name": "String",
-               "location": "String",
-               "timestamp": 125125913,
-               "yearmonth": "2016_11"
+            "$year_month": {
+               "$purchaseId": {
+                  "amount": 21.03,
+                  "name": "String",
+                  "location": "String",
+                  "timestamp": 125125913,
+                  "yearmonth": "2016_11"
+               }
             }
          }
       }
@@ -142,5 +148,5 @@ response_url=https://hooks.slack.com/commands/1234/5678
 3. Check category (if unknown, respond)
 3. Check amount for current month (if over, send response)
 4. Write to user's current budget
-5. Write to category's specifics
+5. Write to category's specifics on the month
 6. Write to history

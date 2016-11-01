@@ -1,6 +1,3 @@
-import * as express from 'express';
-import * as util from 'util';
-import 'express-validator';
 import { SlackPost } from '../interfaces';
 
   /*
@@ -19,21 +16,32 @@ import { SlackPost } from '../interfaces';
  */
 export interface CheckedResponse {
    status: number;
-   body: string;
+   body?: string;
 }
 
-export function checkPostParams(req: express.Request, slackPost: SlackPost, SLACK_TOKEN: string): CheckedResponse {
-  let errors = null;
-  const notAuthorizedMessage = 'Not authorized';
-  req.checkBody('token', notAuthorizedMessage).notEmpty().equals(SLACK_TOKEN);
-  req.checkBody('team_id', notAuthorizedMessage).notEmpty();
-  req.checkBody('user_name', notAuthorizedMessage).notEmpty();
+function isEmpty(value){
+  return (value == null || value.length === 0);
+}
 
-  errors = req.validationErrors();
-  if (errors) {
+export function checkPostParams(slackPost: SlackPost, SLACK_TOKEN: string): CheckedResponse {
+  const errors = Object.keys(slackPost).map(key => {
+    let value = slackPost[key];
+    if(isEmpty(value)) {
+      return `Invalid Slack ${key}`;
+    }
+  }).filter(error => error != undefined);
+  if (slackPost.token !== SLACK_TOKEN) {
+    errors.push('Not authorized');
+  }
+
+  if (errors.length > 0) {
     return {
       status: 403,
-      body: 'There have been validation errors: ' + util.inspect(errors)
-    }
+      body: errors.join(', ')
+    };
   }
+  
+  return { 
+    status: 200 
+  };  
 }

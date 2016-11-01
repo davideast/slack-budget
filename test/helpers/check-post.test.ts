@@ -1,2 +1,0 @@
-import { checkPostParams } from '../../helpers';
-

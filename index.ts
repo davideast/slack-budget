@@ -17,9 +17,8 @@ app.use(expressValidator([{}]));
  */
 app.post('/queue', (req, res) => {
   const slackPost = req.body as SlackPost;
-
-  const checkedResponse = checkPostParams(req, slackPost, SLACK_TOKEN);
-
+  const checkedResponse = checkPostParams(slackPost, SLACK_TOKEN);
+  
   if (checkedResponse) {
     res.send(checkedResponse);
     return;
