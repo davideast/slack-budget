@@ -1,16 +1,12 @@
 "use strict";
-var firebase = require('firebase');
 var express = require('express');
 var bodyParser = require('body-parser');
 var helpers_1 = require('./helpers');
+var user_1 = require('./user');
 var SLACK_TOKEN = process.env.SLACK_TOKEN;
 var SERVICE_ACCOUNT_PATH = process.env.SERVICE_ACCOUNT_PATH;
 var PORT = process.env.PORT;
 var app = express();
-var firebaseApp = firebase.initializeApp({
-    // serviceAccount: 'sa.json',
-    databaseURL: 'https://slack-budget.firebaseio.com'
-});
 app.use(bodyParser.json());
 /**
  * 1. Check post body params
@@ -28,11 +24,9 @@ function queue(req, res) {
         res.json(checkedResponse);
         return;
     }
-    var userRef = firebaseApp.database().ref('users').child(slackPost.user_id);
     // Write user entry
-    userRef.update({
-        username: slackPost.user_name
-    });
+    user_1.user(slackPost.user_id).update(slackPost);
     res.json(checkedResponse);
+    return;
 }
 exports.queue = queue;

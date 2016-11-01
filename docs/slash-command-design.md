@@ -13,7 +13,7 @@
 10. Get current spent in category
 
 ## Command API
-The name is `/spent`. Using a `+` will indicate a category. The `$` will indicate the cost. The `at` will indicate the place. The `on` will indicate the date and time. If there is no `on` then the current date and time is used. Set the current month's budget with a `*current`.
+The name is `/spent`. Using a `+` will indicate a category. The `$` will indicate the cost. The `at` will indicate the place. The `on` will indicate the date and time. If there is no `on` then the current date and time is used. Set the current month's budget with a `*current`. Asking `How much?` will return the total spent on the month. Asking `How much +category?` will return how much you've spent on that category this month. Asking `How much is left?` will return the current budget on the month. Entering `history` will return the total lifetime spent.
 
 ```slack
 /spent +specialty $21.03 at Market Hall
@@ -25,6 +25,8 @@ The name is `/spent`. Using a `+` will indicate a category. The `$` will indicat
 /spent *current 150.00 
 /spent How much?
 /spent How much +football?
+/spent How much is left?
+/spent history
 ```
 
 ### Data Structure

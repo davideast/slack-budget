@@ -1,18 +1,15 @@
 import * as util from 'util';
-import * as firebase from 'firebase';
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import { SlackPost } from './interfaces';
 import { checkPostParams } from './helpers';
+import { firebaseApp } from './firebase-app';
+import { user } from './user';
 
 const SLACK_TOKEN = process.env.SLACK_TOKEN;
 const SERVICE_ACCOUNT_PATH = process.env.SERVICE_ACCOUNT_PATH;
 const PORT = process.env.PORT;
 const app = express();
-const firebaseApp = firebase.initializeApp({
-  // serviceAccount: 'sa.json',
-  databaseURL: 'https://slack-budget.firebaseio.com'
-});
 app.use(bodyParser.json());
 
 /**
@@ -34,11 +31,13 @@ export function queue(req, res) {
     return;
   }
 
-  const userRef = firebaseApp.database().ref('users').child(slackPost.user_id);
   // Write user entry
-  userRef.update({
-    username: slackPost.user_name
+  user(slackPost.user_id).update(slackPost).then(_ => {
+    // return command(slackPost).parse();
   });
 
+
+
   res.json(checkedResponse);
+  return;
 }
