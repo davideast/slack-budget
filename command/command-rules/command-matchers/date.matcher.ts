@@ -12,12 +12,13 @@ const dateMatcher: Matcher = {
             const monthDay = rightSide[0];
             const time = rightSide[1];
             // TODO: create date from this
+            return new Date().getTime();
          } else {
-            return new Error('Invalid date');
+            //return new Error('Invalid date');
          }
       } else {
          // on isn't specified use current time
-         throw new Date().getTime();
+         return new Date().getTime();
       }
    }
 };
