@@ -4,6 +4,7 @@
   "description": "Managing a budget with Slack",
   "main": "dist/index.js",
   "scripts": {
+    "build": "tsc",
     "test": "tsc && ./test.sh",
     "start": "tsc && ./run.sh",
     "e2e": "tsc && ./e2e.sh"

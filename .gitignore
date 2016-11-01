@@ -2,3 +2,4 @@ run.sh
 e2e.sh
 node_modules
 sa.json
+dist

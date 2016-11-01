@@ -19,10 +19,9 @@ export class PurchaseRule extends BaseRule {
   }
 
   buildInstructions(post: SlackPost): CommandInstruction {
-    console.log(this.parse(post));
     return new BaseInstruction({
       ref: this.firebaseApp.database().ref(),
-      value: '1'
+      value: this.parse(post)
     });
   }
 }
