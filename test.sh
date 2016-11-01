@@ -1,1 +1,0 @@
-SLACK_TOKEN=dbWxupBURLzttMjGtTCiVqzH node dist/test/runner.js

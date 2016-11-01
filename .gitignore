@@ -1,5 +1,6 @@
 run.sh
 e2e.sh
+test.sh
 node_modules
 sa.json
 dist
