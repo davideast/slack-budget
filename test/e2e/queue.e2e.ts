@@ -9,14 +9,14 @@ describe('POST /queue', () => {
    describe('Token Authentication', () => {
       
       it('should not authenticate with invalid token', (done: any) => {
-         makeRequest({ token: 'aToken' }).then((res: express.Response) => {
+         makeQueueRequest({ token: 'aToken' }).then((res: express.Response) => {
             expect(res.status).toEqual(403);
             done();
          });
       });
 
       it('should authenticate with a valid token', (done: any) => {
-         makeRequest({ token: SLACK_TOKEN }).then((res: express.Response) => {
+         makeQueueRequest({ token: SLACK_TOKEN }).then((res: express.Response) => {
             expect(res.status).toEqual(200);
             done();
          });
@@ -26,7 +26,10 @@ describe('POST /queue', () => {
 
 });
 
-function makeRequest(body) {
+/**
+ * Helper function for creating POST requests to /queue
+ */
+function makeQueueRequest(body) {
    let options = {
       method: 'POST',
       url: 'http://localhost:3000/queue',

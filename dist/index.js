@@ -30,6 +30,6 @@ function queue(req, res) {
     // Write user entry
     firebase.database().ref('users').child(slackPost.user_id).update({
         username: slackPost.user_name
-    });
+    }).catch(function (e) { return console.log(e); });
 }
 exports.queue = queue;
