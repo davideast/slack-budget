@@ -8,7 +8,7 @@ jrunner.addReporter(new SpecReporter());            // add jasmine-spec-reporter
 jrunner.loadConfig({
     "spec_dir": "dist",
     "spec_files": [
-        "**/*.test.js"
+        "**/*.e2e.js"
     ]
 });                           // load jasmine.json configuration
 jrunner.execute();
