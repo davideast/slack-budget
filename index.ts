@@ -7,6 +7,7 @@ import { checkPostParams } from './helpers';
 
 const SLACK_TOKEN = process.env.SLACK_TOKEN;
 const SERVICE_ACCOUNT_PATH = process.env.SERVICE_ACCOUNT_PATH;
+const PORT = process.env.PORT;
 const app = express();
 const firebaseApp = firebase.initializeApp({
   serviceAccount: 'sa.json',
@@ -19,7 +20,7 @@ app.use(bodyParser.json());
  * 2. Write user entry
  */
 app.post('/queue', queue);
-app.listen(3000, () => {
+app.listen(PORT, () => {
   console.log('Example app listening on port 3000!');
 });
 

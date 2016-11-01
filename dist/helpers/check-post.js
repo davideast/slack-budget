@@ -15,7 +15,6 @@ function checkPostParams(slackPost, SLACK_TOKEN) {
     if (slackPost.token !== SLACK_TOKEN) {
         errors.push('Not authorized');
     }
-    console.log(errors.length);
     if (errors.length > 0) {
         return {
             status: 403,

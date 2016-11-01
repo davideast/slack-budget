@@ -31,13 +31,15 @@ describe('helpers', () => {
 
       it('should reject a post a correct token, but with improper values', () => {
          const badPost = { 
-            token: 'my-token', 
+            token: 'bad-token', 
             team_id: '1', 
             team_domain: 'domain', 
-            user_name: undefined, 
+            user_name: 'alice', 
+            user_id: '1',
             channel_id: '2', 
             channel_name: 'a', 
-            command: '/spent' 
+            command: '/spent',
+            text: '/spent add *category'
          } as SlackPost;
          const checkedResponse = checkPostParams(badPost, 'my-token');
          expect(checkedResponse.status).toEqual(403);

@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 var helpers_1 = require('./helpers');
 var SLACK_TOKEN = process.env.SLACK_TOKEN;
 var SERVICE_ACCOUNT_PATH = process.env.SERVICE_ACCOUNT_PATH;
+var PORT = process.env.PORT;
 var app = express();
 var firebaseApp = firebase.initializeApp({
     serviceAccount: 'sa.json',
@@ -16,7 +17,7 @@ app.use(bodyParser.json());
  * 2. Write user entry
  */
 app.post('/queue', queue);
-app.listen(3000, function () {
+app.listen(PORT, function () {
     console.log('Example app listening on port 3000!');
 });
 function queue(req, res) {

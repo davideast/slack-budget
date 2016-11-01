@@ -3,6 +3,7 @@ import * as express from 'express';
 import 'jasmine';
 
 const SLACK_TOKEN = process.env.SLACK_TOKEN;
+const PORT = process.env.PORT;
 
 describe('POST /queue', () => {
 
@@ -15,9 +16,9 @@ describe('POST /queue', () => {
          });
       });
 
-      it('should authenticate with a valid token', (done: any) => {
+      it('should not authenticate with a valid token, but an invalid POST body', (done: any) => {
          makeQueueRequest({ token: SLACK_TOKEN }).then((res: express.Response) => {
-            expect(res.status).toEqual(200);
+            expect(res.status).toEqual(403);
             done();
          });
       });
@@ -30,9 +31,9 @@ describe('POST /queue', () => {
  * Helper function for creating POST requests to /queue
  */
 function makeQueueRequest(body) {
-   let options = {
+   const options = {
       method: 'POST',
-      url: 'http://localhost:3000/queue',
+      url: `http://localhost:${PORT}/queue`,
       headers: {
          'cache-control': 'no-cache',
          'content-type': 'application/json'
