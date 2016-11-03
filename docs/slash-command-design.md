@@ -147,7 +147,6 @@ response_url=https://hooks.slack.com/commands/1234/5678
 1. Check params 
 1. Write user entry
 2. Parse POST text
-3. Check category (if unknown, respond)
 3. Check amount for current month (if over, send response)
 4. Write to user's current budget
 5. Write to category's specifics on the month

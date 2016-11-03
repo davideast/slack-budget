@@ -1,4 +1,4 @@
-import { checkPostParams } from '../../helpers';
+import { checkPostParams, createYearMonthId } from '../../helpers';
 import { SlackPost } from '../../interfaces';
 import 'jasmine';
 
@@ -60,6 +60,30 @@ describe('helpers', () => {
          const checkedResponse = checkPostParams(goodPost, 'my-token');
          expect(checkedResponse.status).toEqual(200);
       });     
+
+   });
+
+   describe('createYearMonthId', () => {
+      it('should exist', () => {
+         expect(createYearMonthId).toBeDefined();
+      });
+
+      it('should create an year then month formatted Id for a given date', () => {
+         const aprilDate = new Date(2016, 3, 3, 3, 3, 3, 3);
+         const decemberDate = new Date(2016, 11, 2, 11, 11, 11, 11);
+         const novemberId = createYearMonthId(decemberDate);
+         const marchId = createYearMonthId(aprilDate);
+         expect(novemberId).toEqual('2016_12');
+         expect(marchId).toEqual('2016_4');
+      });
+
+      it('should create an year then month formatted Id for the current date', () => {
+         const nowDate = new Date();
+         const nowYear = nowDate.getFullYear();
+         const nowMonth = nowDate.getMonth() + 1;
+         const nowId = createYearMonthId();
+         expect(nowId).toEqual(`${nowYear}_${nowMonth}`);
+      });
 
    });
 

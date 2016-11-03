@@ -4,7 +4,7 @@ export interface CommandRule {
    firebaseApp: firebase.app.App;
    matcher: string;
    match(text: string): boolean;
-   buildInstructions(post: SlackPost): CommandInstruction;
+   buildInstruction(post: SlackPost): Promise<CommandInstruction>;
 }
 
 export interface CommandInstruction {

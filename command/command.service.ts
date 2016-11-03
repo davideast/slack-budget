@@ -12,9 +12,8 @@ export function command(post: SlackPost) {
 export function parseCommand(post: SlackPost, commandRules: CommandRule[]) {
    const instructions = commandRules.map(rule => {
       if (rule.match(post.text)) {
-         return rule.buildInstructions(post);
+         return rule.buildInstruction(post);
       }
    });
    return instructions;
 }
-

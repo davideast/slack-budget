@@ -1,41 +1,65 @@
-import { BaseRule, CommandInstruction, BaseInstruction } from './';
+import { CommandRule, CommandInstruction, BaseInstruction } from './';
 import { firebaseApp } from '../../firebase-app';
 import { SlackPost } from '../../interfaces';
 import { Matcher, matchers } from './command-matchers';
+import { createYearMonthId } from '../../helpers';
 
-export class PurchaseRule extends BaseRule {
+export class PurchaseRule implements CommandRule {
   matcher: string = '+';
 
-  constructor(public firebaseApp, public matchers: Matcher[]) {
-    super(firebaseApp);
+  constructor(public firebaseApp: firebase.app.App, public matchers: Matcher[]) {}
+
+  match(text: string) {
+    return this.matcher.startsWith(text.charAt(0));
   }
 
   static create() {
     return new PurchaseRule(firebaseApp, matchers);
   }
 
-  parse(post: SlackPost) {
+  private parsePurchase(post: SlackPost) {
     return parseSlackPostCommand(post, this.matchers);
   }
 
-  buildInstructions(post: SlackPost): CommandInstruction {
-    return new BaseInstruction({
-      ref: this.firebaseApp.database().ref(),
-      value: this.parse(post)
+  buildInstruction(post: SlackPost): Promise<CommandInstruction> {
+
+    const purchase = this.parsePurchase(post);
+    
+    const fanout = {};
+    // 1. Check amount for current month (if over, send response)
+    // 2. Write to user's current budget
+    // 3. Write to category's specifics on the month
+    // 4. Write to history
+
+
+    return new Promise<CommandInstruction>((resolve, reject) => {
+
     });
+    // return new BaseInstruction({
+    //   ref: this.firebaseApp.database().ref(),
+    //   value: this.parsePurchase(post)
+    // });
   }
 }
+
 
 /**
  * Extract values from a command
  * ex: +specialty $21.03 at Market Hall 
  *  => { category: 'specialty , cost: 21.03, location: 'Market Hall', timestmap: 1478012296989 }
  */
-export function parseSlackPostCommand(post: SlackPost, matchers: Matcher[]) {
+export function parseSlackPostCommand(post: SlackPost, matchers: Matcher[]): Purchase {
   const commandText = post.text;
   const parsedCommand = {};
   matchers.forEach(matcher => {
     parsedCommand[matcher.property] = matcher.parse(commandText);
   });
-  return parsedCommand;
+  return parsedCommand as Purchase;
+}
+
+export interface Purchase {
+  category: string;
+  cost: number;
+  location: string;
+  timestamp: number;
 }
