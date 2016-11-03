@@ -12,3 +12,4 @@ export interface CommandInstruction {
    value: any;
    execute(): firebase.Promise<any>;
 }
+

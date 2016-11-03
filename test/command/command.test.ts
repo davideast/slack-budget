@@ -1,5 +1,5 @@
-import { SlackPost } from '../../interfaces';
-import { PurchaseRule, parseCommand, allRules, categoryMatcher, costMatcher, locationMatcher } from '../../command';
+import { SlackPost, Purchase } from '../../interfaces';
+import { PurchaseRule, parseSlackPostCommand, parseCommand, allRules, matchers, categoryMatcher, costMatcher, locationMatcher } from '../../command';
 import 'jasmine';
 
 describe('commands', () => {
@@ -8,13 +8,16 @@ describe('commands', () => {
 
     describe('PurchaseRule', () => {
 
-        it('should parse a command', () => {
+        it('should parse a slack command for a purchase', () => {
 
-          const instructions = parseCommand({
+          const purchase = parseSlackPostCommand({
               text: '+specialty $21.03 at Market Hall'
-          } as SlackPost , allRules);
-          console.log(instructions);
-
+          } as SlackPost, matchers);
+          
+          expect(purchase.category).toEqual('specialty');
+          expect(purchase.cost).toEqual('21.03');
+          expect(purchase.location).toEqual('Market Hall');
+          
         });
 
     });

@@ -1,6 +1,6 @@
 import { CommandRule, CommandInstruction, BaseInstruction } from './';
 import { firebaseApp } from '../../firebase-app';
-import { SlackPost } from '../../interfaces';
+import { SlackPost, Purchase } from '../../interfaces';
 import { Matcher, matchers } from './command-matchers';
 import { createYearMonthId } from '../../helpers';
 
@@ -55,11 +55,4 @@ export function parseSlackPostCommand(post: SlackPost, matchers: Matcher[]): Pur
     parsedCommand[matcher.property] = matcher.parse(commandText);
   });
   return parsedCommand as Purchase;
-}
-
-export interface Purchase {
-  category: string;
-  cost: number;
-  location: string;
-  timestamp: number;
 }
