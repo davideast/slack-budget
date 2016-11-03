@@ -1,4 +1,5 @@
-import { checkPostParams, createYearMonthId } from '../../helpers';
+import { checkPostParams, createYearMonthId, getPushId } from '../../helpers';
+import { firebaseApp } from '../../firebase-app';
 import { SlackPost } from '../../interfaces';
 import 'jasmine';
 
@@ -84,6 +85,40 @@ describe('helpers', () => {
          const nowId = createYearMonthId();
          expect(nowId).toEqual(`${nowYear}_${nowMonth}`);
       });
+
+   });
+
+   describe('getPushId', () => {
+      
+      it('should exist', () => {
+         expect(getPushId).toBeDefined();
+      });
+
+      it('should create a push id with the default Firebase App', () => {
+         const pushId = getPushId();
+         expect(pushId).toBeDefined();
+      });
+
+      it('should create a push id with the a Mock Firebase App', () => {
+         const mockPushId = 'mock-id';
+         const mockApp = {
+           database() {
+             return {
+               ref() {
+                 return {
+                   push() {
+                     return {
+                       key: mockPushId
+                     }
+                   }
+                 }
+               }
+             }
+           }
+         } as firebase.app.App;
+         const pushId = getPushId(mockApp);
+         expect(pushId).toEqual(mockPushId);
+      });      
 
    });
 

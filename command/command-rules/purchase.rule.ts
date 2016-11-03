@@ -24,12 +24,16 @@ export class PurchaseRule implements CommandRule {
   buildInstruction(post: SlackPost): Promise<CommandInstruction> {
 
     const purchase = this.parsePurchase(post);
-    
+    const yearMonthId = createYearMonthId();
     const fanout = {};
     // 1. Check amount for current month (if over, send response)
+   
+    
+    fanout[`budgets/${post.user_id}/${yearMonthId}/`]
     // 2. Write to user's current budget
     // 3. Write to category's specifics on the month
     // 4. Write to history
+
 
 
     return new Promise<CommandInstruction>((resolve, reject) => {
