@@ -1,5 +1,6 @@
 import { SlackPost, Purchase } from '../../interfaces';
-import { PurchaseRule, parseSlackPostCommand, parseCommand, allRules, matchers, categoryMatcher, costMatcher, locationMatcher } from '../../command';
+import { createYearMonthId } from '../../helpers';
+import { PurchaseRule, parsePurchase, parseCommand, allRules, matchers, categoryMatcher, costMatcher, locationMatcher } from '../../command';
 import 'jasmine';
 
 describe('commands', () => {
@@ -10,17 +11,56 @@ describe('commands', () => {
 
         it('should parse a slack command for a purchase', () => {
 
-          const purchase = parseSlackPostCommand({
+          const purchase = parsePurchase({
               text: '+specialty $21.03 at Market Hall'
           } as SlackPost, matchers);
           
           expect(purchase.category).toEqual('specialty');
           expect(purchase.cost).toEqual('21.03');
           expect(purchase.location).toEqual('Market Hall');
-          
+
         });
 
-    });
+        it('should create an instruction', () => {
+          const purchaseRule = PurchaseRule.create();
+          const instruction = purchaseRule.buildInstruction({
+              text: '+specialty $21.03 at Market Hall',
+              user_id: '1111'
+          } as SlackPost);
+
+          expect(instruction).toBeDefined();
+        });
+
+        it('should build an instruction', (done: any) => {
+          const purchaseRule = PurchaseRule.create();
+          const category = 'specialty';
+          const uid = '1111';
+          const cost = '21.03';
+          const location = 'Market Hall';
+          const purchase = { category, uid, cost, location };
+          const yearMonthId = createYearMonthId();
+          const promise = purchaseRule.buildInstruction({
+              text: '+specialty $21.03 at Market Hall',
+              user_id: '1111'
+          } as SlackPost);
+          
+          promise.then(instruction => {
+            expect(instruction).toBeDefined();
+            const purchaseId = instruction.valueRef.key;
+            // TODO: Custom Firebase Ref matcher
+            expect(instruction.updateRef).toBeDefined();
+            expect(instruction.valueRef).toBeDefined();
+
+            expect(instruction.updateValue[`budgets/${uid}/${yearMonthId}/${purchaseId}`]).toBeDefined();
+            expect(instruction.updateValue[`specifics/${uid}/${category}/${yearMonthId}/${purchaseId}`]).toBeDefined();
+            expect(instruction.updateValue[`categories/${uid}/${category}`]).toBeDefined();    
+            expect(instruction.updateValue[`history/${uid}/${purchaseId}`]).toBeDefined();         
+            done();
+          });
+
+        });
+
+    }); 
     
    });
 

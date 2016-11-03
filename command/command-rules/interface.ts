@@ -8,8 +8,18 @@ export interface CommandRule {
 }
 
 export interface CommandInstruction {
-   ref: firebase.database.Reference;
-   value: any;
+   updateRef?: firebase.database.Reference;
+   updateValue?: any;
+   valueRef: firebase.database.Reference;
    execute(): firebase.Promise<any>;
+   response?(): firebase.Promise<any>;
 }
+
+export interface CommandInstructionOptions { 
+  updateRef?: firebase.database.Reference;
+  updateValue?: any;
+  valueRef: firebase.database.Reference;
+  response?(): firebase.Promise<any>;
+}
+
 

@@ -34,10 +34,11 @@ describe('POST /queue', () => {
             channel_id: '2', 
             channel_name: 'a', 
             command: '/spent',
-            text: '/spent add *category'
+            text: '+specialty $21.03 at Market Hall'
          } as SlackPost;
          makeQueueRequest(goodPost).then((res: express.Response) => {
             expect(res.status).toEqual(200);
+            console.log(res);
             done();
          });
       });

@@ -15,5 +15,5 @@ export function parseCommand(post: SlackPost, commandRules: CommandRule[]) {
          return rule.buildInstruction(post);
       }
    });
-   return instructions;
+   return instructions[0];
 }

@@ -5,6 +5,7 @@ import { SlackPost } from './interfaces';
 import { checkPostParams } from './helpers';
 import { firebaseApp } from './firebase-app';
 import { user } from './user';
+import { command, CommandInstruction } from './command';
 
 const SLACK_TOKEN = process.env.SLACK_TOKEN;
 const SERVICE_ACCOUNT_PATH = process.env.SERVICE_ACCOUNT_PATH;
@@ -32,14 +33,25 @@ export function queue(req, res) {
   }
 
   // Write user entry
-  user(slackPost.user_id).update(slackPost);
-    // .then(_ => {
-    //   // return command(slackPost).parse();
-    // })
-    // .then(instructions => {
-    //   // instructions.map(instruction => instruction.execute())
-    // });
+  // user(slackPost.user_id).update(slackPost)
+  //   .then(_ => {
+  //     return command(slackPost)
+  //   })
+  //   .then((instructions: CommandInstruction[]) => {
+  //     return instructions.map(instruction => instruction.execute())
+  //   })
+  //   .then(data => {
+  //     console.log(data);
+  //   });
 
-  res.json(checkedResponse);
+  command(slackPost).then(instruction => {
+    return instruction.response();
+  }).then(response => {
+    res.json(response);
+    return;
+  }).catch(err => console.log(err));
+
+
+  //res.json(checkedResponse);
   return;
 }
