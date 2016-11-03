@@ -1,23 +1,101 @@
 import { SlackPost } from '../../interfaces';
-import { PurchaseRule, parseCommand, allRules } from '../../command';
+import { PurchaseRule, parseCommand, allRules, categoryMatcher, costMatcher, locationMatcher } from '../../command';
 import 'jasmine';
 
 describe('commands', () => {
 
-   describe('parseCommand', () => {
+   describe('Command Rules', () => {
 
-      it('should parse a command', () => {
+    describe('PurchaseRule', () => {
 
-         const instructions = parseCommand({
-            text: '+specialty $21.03 at Market Hall'
-         } as SlackPost , allRules);
-         console.log(instructions);
+        it('should parse a command', () => {
 
-      });
+          const instructions = parseCommand({
+              text: '+specialty $21.03 at Market Hall'
+          } as SlackPost , allRules);
+          console.log(instructions);
 
+        });
 
+    });
+    
    });
 
+   describe('Command Matchers', () => {
+
+    describe('category matcher', () => {
+
+      it('should match a +', () => {
+        expect(categoryMatcher.character).toEqual('+');
+      });
+
+      it('should have the property of category', () => {
+        expect(categoryMatcher.property).toEqual('category');
+      });
+
+      it('should parse a +category and return the name', () => {
+        const categoryName = '+myCategory'
+        expect(categoryMatcher.parse(categoryName)).toEqual('myCategory');
+      });     
+
+      it('should parse an entire command and return the category name', () => {
+        const categoryName = '+goodfood $21.03 at Market Hall'
+        expect(categoryMatcher.parse(categoryName)).toEqual('goodfood');
+      }); 
+
+    });   
+
+    describe('cost matcher', () => {
+
+      it('should match a $', () => {
+        expect(costMatcher.character).toEqual('$');
+      });
+
+      it('should have the property of cost', () => {
+        expect(costMatcher.property).toEqual('cost');
+      });
+
+      it('should parse a $ cost and return the value', () => {
+        const costValue = '$99.21'
+        expect(costMatcher.parse(costValue)).toEqual('99.21');
+      });     
+
+      it('should parse an entire command and return the cost value', () => {
+        const costValue = '+goodfood $38.51 at Market Hall'
+        expect(costMatcher.parse(costValue)).toEqual('38.51');
+      }); 
+
+    });    
+    
+    describe('location matcher', () => {
+
+      it('should match a at', () => {
+        expect(locationMatcher.character).toEqual('at');
+      });
+
+      it('should have the property of location', () => {
+        expect(locationMatcher.property).toEqual('location');
+      });
+
+      it('should parse a location and return the name', () => {
+        const locationName = 'at My Place'
+        expect(locationMatcher.parse(locationName)).toEqual('My Place');
+      });     
+
+      it('should parse an entire command and return the location name', () => {
+        const locationName = '+goodfood $21.03 at Market Hall'
+        expect(locationMatcher.parse(locationName)).toEqual('Market Hall');
+      }); 
+
+     it('should parse an entire command with a date and return the location name', () => {
+        const locationName = '+goodfood $21.03 at Market Hall on 11/03 at 7:14pm'
+        expect(locationMatcher.parse(locationName)).toEqual('Market Hall');
+      });       
+
+    });          
+
+   });   
+   
 });
 
 /*
