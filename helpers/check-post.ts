@@ -1,9 +1,5 @@
 import { SlackPost } from '../interfaces';
-
-export interface CheckedResponse {
-   status: number;
-   body?: string;
-}
+import { CheckedResponse } from './';
 
 function isEmpty(value){
   return (value == null || value.length === 0);

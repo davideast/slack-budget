@@ -16,7 +16,7 @@ describe('commands', () => {
           } as SlackPost, matchers);
           
           expect(purchase.category).toEqual('specialty');
-          expect(purchase.cost).toEqual('21.03');
+          expect(purchase.cost).toEqual(21.03);
           expect(purchase.location).toEqual('Market Hall');
 
         });
@@ -35,7 +35,7 @@ describe('commands', () => {
           const purchaseRule = PurchaseRule.create();
           const category = 'specialty';
           const uid = '1111';
-          const cost = '21.03';
+          const cost = 21.03;
           const location = 'Market Hall';
           const purchase = { category, uid, cost, location };
           const yearMonthId = createYearMonthId();
@@ -100,12 +100,12 @@ describe('commands', () => {
 
       it('should parse a $ cost and return the value', () => {
         const costValue = '$99.21'
-        expect(costMatcher.parse(costValue)).toEqual('99.21');
+        expect(costMatcher.parse(costValue)).toEqual(99.21);
       });     
 
       it('should parse an entire command and return the cost value', () => {
         const costValue = '+goodfood $38.51 at Market Hall'
-        expect(costMatcher.parse(costValue)).toEqual('38.51');
+        expect(costMatcher.parse(costValue)).toEqual(38.51);
       }); 
 
     });    
