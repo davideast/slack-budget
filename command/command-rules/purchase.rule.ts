@@ -41,11 +41,14 @@ export class PurchaseRule implements CommandRule {
     const purchase = this._parsePurchase(post);
     const purchaseId = getPushId();
     const uid = post.user_id;
+    const teamId = post.team_id;
     const yearMonthId = createYearMonthId();
     const fanout = this._buildFanout(purchaseId, yearMonthId, post, purchase);
     const rootRef = this.firebaseApp.database().ref();
-    const budgetRef = rootRef.child(`amounts/${uid}/${yearMonthId}`);
-    const historyRef = rootRef.child(`history/${uid}/${purchaseId}`);
+    const budgetRef = rootRef.child(`amounts/${teamId}/${yearMonthId}`);
+    const historyRef = rootRef.child(`history/${teamId}/${purchaseId}`);
+    purchase.uid = post.user_id;
+    purchase.username = post.user_name;
 
     return new Promise<PurchaseInstruction>((resolve, reject) => {
       const instruction = new PurchaseInstruction({
@@ -81,18 +84,22 @@ export function buildPurchaseFanout(id: string, yearMonthId: string, post: Slack
   const purchaseId = id;
   const uid = post.user_id;
   const fanout = {};
+  const teamId = post.team_id;
 
-  // Create entry for user's budget on the month
-  fanout[`budgets/${uid}/${yearMonthId}/${purchaseId}`] = purchase;
+  // Create entry for team's budget on the month
+  fanout[`budgets/${teamId}/${yearMonthId}/${purchaseId}`] = purchase;
 
   // Create an entry for the category's specifics on the month
-  fanout[`specifics/${uid}/${purchase.category}/${yearMonthId}/${purchaseId}`] = purchase;
+  fanout[`specifics/${teamId}/${purchase.category}/${yearMonthId}/${purchaseId}`] = purchase;
 
-  // Create an entry for the user's category
-  fanout[`categories/${uid}/${purchase.category}`] = purchase.category;
+  // Create an entry for the team's category
+  fanout[`categories/${teamId}/${purchase.category}`] = purchase.category;
+
+  // Create an entry for the team's overall history
+  fanout[`history/${teamId}/${purchaseId}`] = purchase;
 
   // Create an entry for the user's overall history
-  fanout[`history/${uid}/${purchaseId}`] = purchase;
+  fanout[`userHistory/${uid}/${purchaseId}`] = purchase;
 
   return fanout;
 }

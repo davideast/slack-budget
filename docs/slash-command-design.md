@@ -33,11 +33,11 @@ The name is `/spent`. Using a `+` will indicate a category. The `$` will indicat
 The primary shared key is the user's `uid`. Each month has a budget amount, therefore `$year_month` makes a unique key for recording purchases in that month.
 
 `users` - Records user data.
-`amounts` - Records the amount per user per month
-`budgets` - Records the purchases per user per month
-`specifics` - Records the purchases per category per user
+`amounts` - Records the amount per team per month
+`budgets` - Records the purchases per team per month
+`specifics` - Records the purchases per category per team
 `categories` - Records the category of purchase (acts as a foreign key)
-`history` - Records all flattened purchases per user
+`history` - Records all flattened purchases per team
 
 ```json
 {
@@ -47,14 +47,15 @@ The primary shared key is the user's `uid`. Each month has a budget amount, ther
       }
    },
    "amounts": {
-      "$uid": {
+      "$teamId": {
          "$year_month": 200
       }
    },
    "budgets": {
-      "$uid": {
+      "$teamId": {
          "$year_month": {
             "$purchaseId": {
+               "uid": "1",
                "amount": 21.03,
                "name": "String",
                "location": "String",
@@ -64,10 +65,11 @@ The primary shared key is the user's `uid`. Each month has a budget amount, ther
       }
    },
    "specifics": {
-      "$uid": {
+      "$teamId": {
          "$categoryId": {
             "$year_month": {
                "$purchaseId": {
+                  "uid": "1",
                   "amount": 21.03,
                   "name": "String",
                   "location": "String",
@@ -79,19 +81,31 @@ The primary shared key is the user's `uid`. Each month has a budget amount, ther
       }
    },
    "categories": {
-      "$uid": {
+      "$teamId": {
          "$categoryId": "String"
       }
    },
    "history": {
-      "$uid": {
+      "$teamId": {
          "$purchaseId": {
+            "uid": "1",
             "amount": 21.03,
             "name": "String",
             "location": "String",
             "timestamp": 125125913            
          }
       }
+   },
+   "userHistory": {
+     "$uid": {
+        "$purchaseId": {
+           "uid": "1",
+           "amount": 21.03,
+           "name": "String",
+           "location": "String",
+           "timestamp": 125125913            
+       }
+     }
    }
 }
 ```

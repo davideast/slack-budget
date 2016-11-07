@@ -37,11 +37,13 @@ describe('commands', () => {
           const uid = '1111';
           const cost = 21.03;
           const location = 'Market Hall';
-          const purchase = { category, uid, cost, location };
+          const teamId = '11';
+          const purchase = { category, uid, cost, location, teamId };
           const yearMonthId = createYearMonthId();
           const promise = purchaseRule.buildInstruction({
               text: '+specialty $21.03 at Market Hall',
-              user_id: '1111'
+              user_id: '1111',
+              team_id: teamId
           } as SlackPost);
           
           promise.then(instruction => {
@@ -50,11 +52,11 @@ describe('commands', () => {
             // TODO: Custom Firebase Ref matcher
             expect(instruction.updateRef).toBeDefined();
             expect(instruction.valueRef).toBeDefined();
-
-            expect(instruction.updateValue[`budgets/${uid}/${yearMonthId}/${purchaseId}`]).toBeDefined();
-            expect(instruction.updateValue[`specifics/${uid}/${category}/${yearMonthId}/${purchaseId}`]).toBeDefined();
-            expect(instruction.updateValue[`categories/${uid}/${category}`]).toBeDefined();    
-            expect(instruction.updateValue[`history/${uid}/${purchaseId}`]).toBeDefined();         
+            expect(instruction.updateValue[`budgets/${teamId}/${yearMonthId}/${purchaseId}`]).toBeDefined();
+            expect(instruction.updateValue[`specifics/${teamId}/${category}/${yearMonthId}/${purchaseId}`]).toBeDefined();
+            expect(instruction.updateValue[`categories/${teamId}/${category}`]).toBeDefined();    
+            expect(instruction.updateValue[`history/${teamId}/${purchaseId}`]).toBeDefined();
+            expect(instruction.updateValue[`userHistory/${uid}/${purchaseId}`]).toBeDefined();        
             done();
           });
 
