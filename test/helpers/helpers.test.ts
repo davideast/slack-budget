@@ -1,4 +1,4 @@
-import { checkPostParams, createYearMonthId, getPushId } from '../../helpers';
+import { checkPostParams, createYearMonthId, getPushId, toNumber, isNumber } from '../../helpers';
 import { firebaseApp } from '../../firebase-app';
 import { SlackPost } from '../../interfaces';
 import 'jasmine';
@@ -119,6 +119,41 @@ describe('helpers', () => {
          const pushId = getPushId(mockApp);
          expect(pushId).toEqual(mockPushId);
       });      
+
+   });
+
+   describe('numbers', () => {
+
+     describe('isNumber', () => {
+       
+       it('should not specify a non-numeric value as a number', () => {
+         expect(isNumber('a')).toBe(false);
+       });
+
+       it('should specify a numeric value as a number', () => {
+         expect(isNumber(1)).toBe(true);
+       });       
+
+       it('should specify a numeric string value as a number', () => {
+         expect(isNumber('1.01')).toBe(true);
+         expect(isNumber('01')).toBe(true);
+       });
+
+     });
+
+     describe('toNumber', () => {
+
+       it('should not cast a non-numeric value to a number', () => {
+         // HACK! NaN is not equal to itself. Turn the NaN object into a string 'NaN'
+         // and then compare to a string 'NaN'.
+         expect(toNumber('a')+'').toBe('NaN');
+       });
+
+       it('should cast a non-numeric value to a number', () => {
+         expect(toNumber('21.03')).toBe(21.03);
+       });
+
+     });
 
    });
 

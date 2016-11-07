@@ -49,24 +49,24 @@ export class PurchaseRule implements CommandRule {
         updateRef: this.firebaseApp.database().ref(),
         updateValue: fanout,
         response() {
-          return new Promise((resolve, reject) => {
-            resolve({
-              status: 200,
-              body: `Saved! You now have $200 left on the month!`
+          // Find the amount left
+          const budgetRef = this.updateRef.child(`amounts/${uid}/${yearMonthId}`);
+          return budgetRef.once('value')
+            .then(snap => {
+              const amounts = snap.val();
+              return budgetRef.child('left').transaction(function(current) {
+                // Deduct the amount left
+                return (current || 0) + purchase.cost;
+              });
+            })
+            .then(leftTransaction => {
+              // Warn if you've gone over.
+              return {
+                status: 200,
+                body: `Saved! You now have ${leftTransaction.snapshot.val()} left on the month!`
+              };              
             });
-          });
         }
-        // response() {
-        //   const budgetRef = this.updateRef.child(`amounts/${uid}/${yearMonthId}`);
-        //   return budgetRef.once('value')
-        //     .then(snap => {
-        //       const amount = snap.val();
-        //       return {
-        //         status: 200,
-        //         body: `Saved! You now have ${amount} left on the month!`
-        //       };
-        //     });
-        // }
       });
       resolve(instruction);
     });

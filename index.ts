@@ -33,25 +33,19 @@ export function queue(req, res) {
   }
 
   // Write user entry
-  // user(slackPost.user_id).update(slackPost)
-  //   .then(_ => {
-  //     return command(slackPost)
-  //   })
-  //   .then((instructions: CommandInstruction[]) => {
-  //     return instructions.map(instruction => instruction.execute())
-  //   })
-  //   .then(data => {
-  //     console.log(data);
-  //   });
-
-  command(slackPost).then(instruction => {
-    return instruction.response();
-  }).then(response => {
-    res.json(response);
-    return;
-  }).catch(err => console.log(err));
-
-
-  //res.json(checkedResponse);
-  return;
+  user(slackPost.user_id).update(slackPost)
+    .then(_ => {
+      return command(slackPost)
+    })
+    .then((instruction: CommandInstruction) => {
+      return instruction.execute();
+    })
+    .then((instruction: CommandInstruction) => {
+      instruction.response();
+    })
+    .then(data => {
+      console.log(data);
+      return res.json(data.val());
+    })
+    .catch(err => console.log(err.stack));
 }

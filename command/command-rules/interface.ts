@@ -1,5 +1,10 @@
 import { SlackPost } from '../../interfaces';
 
+export interface CommandResponse {
+  status: number;
+  body: string | any;
+}
+
 export interface CommandRule {
    firebaseApp: firebase.app.App;
    matcher: string;
@@ -11,8 +16,8 @@ export interface CommandInstruction {
    updateRef?: firebase.database.Reference;
    updateValue?: any;
    valueRef: firebase.database.Reference;
-   execute(): firebase.Promise<any>;
-   response?(): firebase.Promise<any>;
+   execute(): firebase.Promise<CommandInstruction>;
+   response?(): firebase.Promise<CommandResponse>;
 }
 
 export interface CommandInstructionOptions { 
