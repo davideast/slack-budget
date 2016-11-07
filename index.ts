@@ -5,7 +5,9 @@ import { SlackPost } from './interfaces';
 import { checkPostParams } from './helpers';
 import { firebaseApp } from './firebase-app';
 import { user } from './user';
-import { command, CommandInstruction } from './command';
+import { command } from './command';
+// TODO: Flatten import path
+import { CommandInstruction } from './command/command-rules/command-instructions';
 
 const SLACK_TOKEN = process.env.SLACK_TOKEN;
 const SERVICE_ACCOUNT_PATH = process.env.SERVICE_ACCOUNT_PATH;
@@ -41,11 +43,11 @@ export function queue(req, res) {
       return instruction.execute();
     })
     .then((instruction: CommandInstruction) => {
-      instruction.response();
+      return instruction.response();
     })
     .then(data => {
       console.log(data);
-      return res.json(data.val());
+      return res.json(data);
     })
     .catch(err => console.log(err.stack));
 }

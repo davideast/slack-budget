@@ -1,27 +1,28 @@
-import { CommandInstruction, CommandInstructionOptions, CommandResponse } from './';
+import { CommandResponse } from '../';
+import { CommandInstruction, CommandInstructionOptions } from './'
 
 /**
  * A class to handle the updating of a database and returning the desired result
  * back after the instruction executes.
  */
-export class BaseInstruction implements CommandInstruction {
+export abstract class BaseInstruction implements CommandInstruction {
 
    updateRef?: firebase.database.Reference;
    valueRef: firebase.database.Reference;
    updateValue?: any;
-   response?(): firebase.Promise<CommandResponse>;
 
    constructor(options: CommandInstructionOptions) {
       this.updateRef = options.updateRef;
       this.updateValue = options.updateValue;
       this.valueRef = options.valueRef;
-      this.response = options.response;
 
       // Ensure `this` is bound to the class instance
       this.execute = this.execute.bind(this);
       this._executeWithUpdateRef = this._executeWithUpdateRef.bind(this);
       this._executeWithValueRef  = this._executeWithValueRef.bind(this);
    }
+
+   abstract response(): firebase.Promise<CommandResponse>;
 
    /**
     * Begin execution of the instruction. If no updateRef is provided

@@ -1,4 +1,5 @@
-import { CommandRule, CommandInstruction, BaseInstruction } from './';
+import { CommandRule, CommandResponse } from './';
+import { PurchaseInstruction, CommandInstruction, CommandInstructionOptions } from './command-instructions';
 import { firebaseApp } from '../../firebase-app';
 import { SlackPost, Purchase } from '../../interfaces';
 import { Matcher, matchers } from './command-matchers';
@@ -7,7 +8,7 @@ import { createYearMonthId, getPushId } from '../../helpers';
 export class PurchaseRule implements CommandRule {
   matcher: string = '+';
 
-  constructor(public firebaseApp: firebase.app.App, public matchers: Matcher[]) {}
+  constructor(public firebaseApp: firebase.app.App, public matchers: Matcher[]) { }
 
   /**
    * Determine if a command begins with the matcher +
@@ -42,57 +43,25 @@ export class PurchaseRule implements CommandRule {
     const uid = post.user_id;
     const yearMonthId = createYearMonthId();
     const fanout = this._buildFanout(purchaseId, yearMonthId, post, purchase);
+    const rootRef = this.firebaseApp.database().ref();
+    const budgetRef = rootRef.child(`amounts/${uid}/${yearMonthId}`);
+    const historyRef = rootRef.child(`history/${uid}/${purchaseId}`);
 
-    return new Promise<CommandInstruction>((resolve, reject) => {
-      const instruction = new BaseInstruction({
-        valueRef: this.firebaseApp.database().ref(`history/${uid}/${purchaseId}`),
-        updateRef: this.firebaseApp.database().ref(),
-        updateValue: fanout,
-        response() {
-          // Find the amount left
-          const budgetRef = this.updateRef.child(`amounts/${uid}/${yearMonthId}`);
-          return budgetRef.once('value')
-            .then(snap => {
-              const amounts = snap.val();
-              return budgetRef.child('left').transaction(function(current) {
-                // Deduct the amount left
-                return (current || 0) + purchase.cost;
-              });
-            })
-            .then(leftTransaction => {
-              // Warn if you've gone over.
-              return {
-                status: 200,
-                body: `Saved! You now have ${leftTransaction.snapshot.val()} left on the month!`
-              };              
-            });
-        }
-      });
+    return new Promise<PurchaseInstruction>((resolve, reject) => {
+      const instruction = new PurchaseInstruction({
+        valueRef: historyRef, // history will contain the values needed for the response
+        updateRef: rootRef, // update from root due to multi-path updates
+        updateValue: fanout
+      }, budgetRef, purchase);
       resolve(instruction);
     });
   }
 
   private _buildFanout(id: string, yearMonthId: string, post: SlackPost, purchase: Purchase) {
-    const purchaseId = id;
-    const uid = post.user_id;
-    const fanout = {};
-    
-    // Create entry for user's budget on the month
-    fanout[`budgets/${uid}/${yearMonthId}/${purchaseId}`] = purchase;
-    
-    // Create an entry for the category's specifics on the month
-    fanout[`specifics/${uid}/${purchase.category}/${yearMonthId}/${purchaseId}`] = purchase;
-    
-    // Create an entry for the user's category
-    fanout[`categories/${uid}/${purchase.category}`] = purchase.category;
-    
-    // Create an entry for the user's overall history
-    fanout[`history/${uid}/${purchaseId}`] = purchase;
-
-    return fanout;
+    return buildPurchaseFanout(id, yearMonthId, post, purchase);
   }
+  
 }
-
 
 /**
  * Extract a purchase from a command
@@ -106,4 +75,24 @@ export function parsePurchase(post: SlackPost, matchers: Matcher[]): Purchase {
     parsedCommand[matcher.property] = matcher.parse(commandText);
   });
   return parsedCommand as Purchase;
+}
+
+export function buildPurchaseFanout(id: string, yearMonthId: string, post: SlackPost, purchase: Purchase) {
+  const purchaseId = id;
+  const uid = post.user_id;
+  const fanout = {};
+
+  // Create entry for user's budget on the month
+  fanout[`budgets/${uid}/${yearMonthId}/${purchaseId}`] = purchase;
+
+  // Create an entry for the category's specifics on the month
+  fanout[`specifics/${uid}/${purchase.category}/${yearMonthId}/${purchaseId}`] = purchase;
+
+  // Create an entry for the user's category
+  fanout[`categories/${uid}/${purchase.category}`] = purchase.category;
+
+  // Create an entry for the user's overall history
+  fanout[`history/${uid}/${purchaseId}`] = purchase;
+
+  return fanout;
 }

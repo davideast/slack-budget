@@ -1,4 +1,5 @@
-import { SlackPost } from '../../interfaces';
+import { SlackPost, Purchase } from '../../interfaces';
+import { CommandInstruction } from './command-instructions';
 
 export interface CommandResponse {
   status: number;
@@ -12,19 +13,8 @@ export interface CommandRule {
    buildInstruction(post: SlackPost): Promise<CommandInstruction>;
 }
 
-export interface CommandInstruction {
-   updateRef?: firebase.database.Reference;
-   updateValue?: any;
-   valueRef: firebase.database.Reference;
-   execute(): firebase.Promise<CommandInstruction>;
-   response?(): firebase.Promise<CommandResponse>;
+export interface HistoryPurchase extends Purchase {
+  leftBudget: number;
+  totalBudget: number;
 }
-
-export interface CommandInstructionOptions { 
-  updateRef?: firebase.database.Reference;
-  updateValue?: any;
-  valueRef: firebase.database.Reference;
-  response?(): firebase.Promise<any>;
-}
-
 
